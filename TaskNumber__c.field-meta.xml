@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TaskNumber__c</fullName>
+    <displayFormat>A-{0000}</displayFormat>
+    <externalId>false</externalId>
+    <label>TaskNumber</label>
+    <type>AutoNumber</type>
+</CustomField>
