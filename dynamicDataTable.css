@@ -1,0 +1,10 @@
+.sort_icon {
+  display: none;
+}
+
+.columnHoverOver:hover .sort_icon {
+  display: initial;
+}
+.selectedColumn .sort_icon {
+  display: initial !important;
+}

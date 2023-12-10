@@ -1,0 +1,55 @@
+<template>
+    <lightning-card>
+        <template if:true={hrOnboadingView}>
+            <p class="slds-align_absolute-center" style="font-size: 2.2em;"><strong>Onboarding System</strong></p>
+            <lightning-button variant="brand" label=" Add New Trainee" title="Show Form" onclick={handleshowForm}></lightning-button>
+            <div class="slds-p-top_medium">
+                <div  class="slds-p-top_small slds-m-around_small "> 
+                     <c-dynamic-data-table >
+                    </c-dynamic-data-table>
+                </div>
+            </div>
+            
+            <template if:true={showPopup}>
+                <div class="backdrop" onclick={closePopup}></div>
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_small">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Enter Onboarding Information for New Employees</h2>
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={handleiconclosePopup}>
+                                <lightning-icon icon-name="utility:close" alternative-text="Close" variant="inverse"></lightning-icon>
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <!-- <lightning-record-edit-form object-api-name="User">
+                                <lightning-input-field field-name="Name" data-field="Name" value=""></lightning-input-field>
+                                <lightning-input-field field-name="Email" data-field="Email" value="" required></lightning-input-field>
+                            </lightning-record-edit-form> -->
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item class="slds-p-around_small" size="6">
+                                    <lightning-input class="validatefld" name="FirstName" label="FirstName" value="" type="text"></lightning-input>
+                                    <lightning-input class="validatefld" name="LastName" label="LastName" value="" type="text" message-when-value-missing="Please enter your surname" required></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item class="slds-p-around_small" size="6">
+                                    <lightning-input class="validatefld" name="Email" label="Email" value="" type="email" message-when-value-missing="Please enter your email" required></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <button class="slds-button slds-button_neutral" onclick={handleiconclosePopup} aria-label="Cancel and close">Cancel</button>
+                            <button class="slds-button slds-button_brand" onclick={handleSaveUser}>Save</button>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+        </template>
+    <!-- Child component (employee view for training) -->
+    <template if:false={hrOnboadingView}>
+        <div>
+            <c-employee-view-for-training></c-employee-view-for-training>
+        </div>
+    </template>
+    </lightning-card>
+</template>

@@ -1,0 +1,11 @@
+<template>
+    <h1><strong>Collect Onboarding Details for Employees Joined in the Last {noOfDays} Days:</strong></h1>
+    <lightning-input type="checkbox" label="Do you want to download?" checked={downloadEnabled} onchange={handleDownload}></lightning-input>
+
+    <lightning-datatable
+            key-field="Id"
+            data={users}
+            columns={columns}
+            hide-checkbox-column="true">
+        </lightning-datatable>
+</template>

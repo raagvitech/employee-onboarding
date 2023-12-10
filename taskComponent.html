@@ -1,0 +1,202 @@
+<template>
+    <h2><strong> Employee Task Board </strong></h2>
+    <template if:true={showCreateNewTask}>
+    <lightning-button variant="Brand"
+       label="Assign Task"
+       onclick={customShowModalPopup}
+       class="slds-m-top_none slds-float_right ">
+       </lightning-button>
+    </template>
+       <template if:true={customFormModal}>
+           <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+               <div class="slds-modal__container">
+               <!-- modal header start -->
+               <header class="slds-modal__header">
+               <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={customHideModalPopup}>
+                   <lightning-icon icon-name="utility:close"
+                   alternative-text="close"
+                   variant="Neutral"
+                   size="small" ></lightning-icon>
+                   <span class="slds-assistive-text">Close</span>
+               </button>
+               <h2 class="slds-text-heading_medium slds-hyphenate">Please Enter The Details</h2>
+           </header>
+           <div class="container-fluid">
+               <div class="slds-modal__content slds-p-around_medium">
+ <!--                   
+                   <lightning-input 
+                   label="CTC Number"
+                   id="CTC_Number__c" 
+                   type="text" 
+                   class="slds-size--2-of-3 " 
+                   value={newlist.CTC_Number__c}
+                   placeholder="Enter Your CTC Number Here...."
+                   onchange={handelChange}>
+               </lightning-input> -->
+ 
+               <lightning-input 
+               label="Description"
+               id="Description" 
+               type="text"
+               class="slds-size--2-of-3 " 
+               value={newlist.Description}
+               placeholder="Enter Your Description Here...."
+               onchange={handelChange}>
+           </lightning-input>
+           <lightning-combobox
+           name="Status"
+           label="Status"
+           value={newlist.Status}
+           placeholder="Select Progress"
+           options={options}
+           onchange={handelChange} ></lightning-combobox>
+           <lightning-combobox name="Assigned To"
+                               label="Assigned To"
+                               value={newlist.OwnerId} 
+                               options={typeOptions} 
+                               onchange={handelChange}> 
+           </lightning-combobox>
+           
+           <br/>
+           <br/>
+           <footer class="slds-modal__footer">
+               <button class="slds-button slds-button_neutral" onclick={customHideModalPopup} title="Cancel">Cancel</button>
+               <button  type="submit"  disabled={savebuttondesable}  class="slds-button slds-button_neutral"  onclick={handelOnClick}   title="Save"
+              >Save</button>
+              </footer>
+               </div>
+           </div>
+           </div>
+           </section>
+       </template>
+     <br/>
+     <br/>
+    <div  class="slds-p-top_small slds-align_absolute-center ">
+        <lightning-layout vertical-align="stretch" multiple-rows="true" class="x-large">
+            
+            <lightning-layout-item size="2"  padding="around-small" class="custom-box">          
+                    <div class="slds-text-heading_small">To-Do</div>
+                    <div id="To-Do" style="height:100%" data-role="drop-target" ondrop={handleDrop} ondragenter={handleDragEnter} ondragover={handleDragOver} ondragleave={handleDragLeave}>
+                    <template if:true={taskNewList}>
+                        <template for:each={taskNewList} for:item="data">
+                            <div key={data.Id} draggable="true" id={data.Id} data-id={data.Id} data-value="To-Do" ondragstart={taskDragStart} ondragend={taskDragEnd} class="slds-p-around_small">
+                                <lightning-card  variant="Narrow" title={data.Subject}>
+                                    <div class="slds-p-horizontal_small">
+                            
+                                        <a href="javascript:void(0);" onclick={navigateToTaskObject} data-task-id={data.Id}>
+                                            <p style="color:red;"><b>Task Number: {data.TaskNumber__c}</b></p>
+                                        </a>
+                                        <p style="color:blue;"> <B>Description :</B>{data.Description}</p>
+                                        <p style="color:rgb(244, 84, 10);"> <B>Assigned To :</B>{data.OwnerName}</p><br/>
+                                                                        
+                                    </div>
+                                </lightning-card>
+                            </div>
+                        </template>
+                    </template>
+                    </div>
+                
+            </lightning-layout-item>
+            <lightning-layout-item size="2"  padding="around-small" class="custom-box">
+                <div class="slds-text-heading_small">In Progress</div>
+                <div id="InProgress" style="height:100%" data-role="drop-target" ondrop={handleDrop} ondragenter={handleDragEnter} ondragover={handleDragOver} ondragleave={handleDragLeave}>
+                    <template if:true={Takinprogress}>
+                    <template if:true={taskInProgressList}>
+                        <template for:each={taskInProgressList} for:item="data">
+                            <div key={data.Id} draggable="true" id={data.Id} data-id={data.Id}  data-value="InProgress" ondragstart={taskDragStart} ondragend={taskDragEnd} class="slds-p-around_small">
+                                <lightning-card style="width: 50px;"  variant="Narrow" title={data.Subject}>
+                                    <div class="slds-p-horizontal_small">
+                            
+                                        <a href="javascript:void(0);" onclick={navigateToTaskObject} data-task-id={data.Id}>
+                                            <p style="color:red;"><b>Task Number: {data.TaskNumber__c}</b></p>
+                                        </a>
+                                        <p style="color:blue;"> <B>Description :</B>{data.Description}</p>
+                                        <p style="color:rgb(244, 84, 10);"> <B>Assigned To :</B>{data.OwnerName}</p><br/>
+                                                                        
+                                    
+                                    </div>
+                                </lightning-card>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="2"  padding="around-small" class="custom-box">
+                <div class="slds-text-heading_small">Review</div>
+                <div id="PeerReview" style="height:100%" data-role="drop-target" ondrop={handleDrop} ondragenter={handleDragEnter} ondragover={handleDragOver} ondragleave={handleDragLeave}>
+                    <template if:true={TaskpeerReview}>
+                    <template if:true={taskPeerReviewList}>
+                        <template for:each={taskPeerReviewList} for:item="data">
+                            <div key={data.Id} draggable="true" id={data.Id} data-id={data.Id} data-value="PeerReview" ondragstart={taskDragStart} ondragend={taskDragEnd} class="slds-p-around_small">
+                                <lightning-card style="width: 50px;"  variant="Narrow" title={data.Subject} >
+                                    <div class="slds-p-horizontal_small">
+                            
+                                        <a href="javascript:void(0);" onclick={navigateToTaskObject} data-task-id={data.Id}>
+                                            <p style="color:red;"><b>Task Number: {data.TaskNumber__c}</b></p>
+                                        </a>
+                                        <p style="color:blue;"> <B>Description :</B>{data.Description}</p>
+                                        <p style="color:rgb(244, 84, 10);"> <B>Assigned To :</B>{data.OwnerName}</p><br/>
+                                                                        
+                                    
+                                    </div>
+                                </lightning-card>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="2"  padding="around-small" class="custom-box">
+                <div class="slds-text-heading_small">Testing</div>
+                <div id="QaTesting" style="height:100%" data-role="drop-target" ondrop={handleDrop} ondragenter={handleDragEnter} ondragover={handleDragOver} ondragleave={handleDragLeave}>
+                    <template if:true={TaskQaTesting}>
+                    <template if:true={taskQAtestingList}>
+                        <template for:each={taskQAtestingList} for:item="data">
+                            <div key={data.Id} draggable="true" id={data.Id} data-id={data.Id}  data-value="QaTesting" ondragstart={taskDragStart} ondragend={taskDragEnd} class="slds-p-around_small">
+                                <lightning-card style="width: 50px;"  variant="Narrow" title={data.Subject}>
+                                    <div class="slds-p-horizontal_small">
+                            
+                                        <a href="javascript:void(0);" onclick={navigateToTaskObject} data-task-id={data.Id}>
+                                            <p style="color:red;"><b>Task Number: {data.TaskNumber__c}</b></p>
+                                        </a>
+                                        <p style="color:blue;"> <B>Description :</B>{data.Description}</p>
+                                        <p style="color:rgb(244, 84, 10);"> <B>Assigned To :</B>{data.OwnerName}</p><br/>
+                                                                        
+                                    
+                                    </div>
+                                </lightning-card>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="2"  padding="around-small" class="custom-box">
+                <div class="slds-text-heading_small">Completed</div>
+                <div id="done" style="height:100%" data-role="drop-target" ondrop={handleDrop} ondragenter={handleDragEnter} ondragover={handleDragOver} ondragleave={handleDragLeave}>
+                    <template if:true={taskDone}>
+                    <template if:true={taskCompletedList}>
+                        <template for:each={taskCompletedList} for:item="data">
+                            <div key={data.Id} draggable="true" id={data.Id} data-id={data.Id}  data-value="done" ondragstart={taskDragStart} ondragend={taskDragEnd} class="slds-p-around_small">
+                                <lightning-card style="width: 50px;"  variant="Narrow" title={data.Subject}>
+                                    <div class="slds-p-horizontal_small">
+                            
+                                        <a href="javascript:void(0);" onclick={navigateToTaskObject} data-task-id={data.Id}>
+                                            <p style="color:red;"><b>Task Number: {data.TaskNumber__c}</b></p>
+                                        </a>
+                                        <p style="color:blue;"> <B>Description :</B>{data.Description}</p>
+                                        <p style="color:rgb(244, 84, 10);"> <B>Assigned To :</B>{data.OwnerName}</p><br/>
+                                                                        
+                                    
+                                    </div>
+                                </lightning-card>
+                            </div>
+                        </template>
+                    </template>
+                </template>
+                </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+ </template>
